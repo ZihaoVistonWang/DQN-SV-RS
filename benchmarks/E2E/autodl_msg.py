@@ -1,10 +1,20 @@
+import socket
 import requests as re
 from config import args, log
+
+def get_host_info():
+    hostname = socket.gethostname()
+    try:
+        ip_address = socket.gethostbyname(hostname)
+    except Exception:
+        ip_address = "Unknown"
+    return hostname, ip_address
 
 def send_msg():
     url = "https://www.autodl.com/api/v1/wechat/message/send"
     headers = {"Authorization": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjI1MzU5LCJ1dWlkIjoiMTU4MzdiNzMtOWI3ZS00MTNhLTkxYTUtYjVkNTc4ZmJlN2IyIiwiaXNfYWRtaW4iOmZhbHNlLCJiYWNrc3RhZ2Vfcm9sZSI6IiIsImlzX3N1cGVyX2FkbWluIjpmYWxzZSwic3ViX25hbWUiOiIiLCJ0ZW5hbnQiOiJhdXRvZGwiLCJ1cGsiOiIifQ.aYjK7oljKYoTjuc_5vEzyq8B3i2HrjDfSWZFYxHhJNBuyPu5f4-xh_StpboWELfJanM8UpAumaZ3hub1aUXcUQ"}
-    msg = f"model={args.model}_seed={args.seed}_{args.tuning_param_middle_path[:-1]}已完成！"
+    hostname, ip_address = get_host_info()
+    msg = f"model={args.model}_seed={args.seed}_{args.tuning_param_middle_path[:-1]}已完成！{hostname}-{ip_address}"
 
     try:
         resp = re.post(url, headers=headers, json={"name": msg})
